@@ -25,6 +25,8 @@ class ProductEntry(
             val gson = Gson()
             val productListType = object : TypeToken<ArrayList<ProductEntry>>() {}.type
             return gson.fromJson<List<ProductEntry>>(jsonProductsString, productListType)
+
         }
     }
 }
+

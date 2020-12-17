@@ -7,9 +7,14 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.codelabs.mdc.kotlin.shrine.R
-import com.google.codelabs.mdc.kotlin.shrine.network.ImageRequester
+//import com.google.codelabs.mdc.kotlin.shrine.network.ImageRequester
+import com.google.codelabs.mdc.kotlin.shrine.network.api
 import com.google.codelabs.mdc.kotlin.shrine.network.ProductEntry
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import org.json.JSONObject
+
 
 /**
  * Adapter used to show an asymmetric grid of products, with 2 items in the first column, and 1
@@ -39,17 +44,18 @@ class StaggeredProductCardRecyclerViewAdapter(private val productList: List<Prod
             //holder.productTitle.text = "hello"//product.title
             val url = "http://3.17.70.143:8069/recurring_task/recurring_task"
 
-            val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject("{ 'barcode':'121232'}"),
-                    Response.Listener { response ->
-                        holder.productTitle.text = "Response: %s".format(response.toString())
-                    },
-                    Response.ErrorListener { error ->
-                        holder.productTitle.text = "Response: %s".format(error.toString())
-                    }
-            )
-            ImageRequester.addJsonreq(jsonObjectRequest)
+            val data = mapOf<String, String>("barcode" to "4813882329758")
+
+            val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject(data), Response.Listener { response ->
+                //val gson = Gson()
+                //val res = gson.fromJson<JsonObjectRequest>(response.get("result").toString(),JsonObjectRequest.class))
+                holder.productTitle.text = response.get("result").toString()
+            }, Response.ErrorListener { error ->
+                holder.productTitle.text = "Error: %s".format(error.toString())
+            })
+            api.addJsonreq(jsonObjectRequest)
             holder.productPrice.text = product.price
-            ImageRequester.setImageFromUrl(holder.productImage, product.url)
+            api.setImageFromUrl(holder.productImage, product.url)
         }
     }
 
@@ -57,3 +63,4 @@ class StaggeredProductCardRecyclerViewAdapter(private val productList: List<Prod
         return productList?.size ?: 0
     }
 }
+
