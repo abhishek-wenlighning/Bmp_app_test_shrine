@@ -1,3 +1,3 @@
-# MDC-101 for Material Components for Android (Kotlin)
+# Ecommerce App test for BMP
 
-Contains starter code structure for the MDC-101 Kotlin codelab.
+Contains scanning feature for barcode and self checkout
