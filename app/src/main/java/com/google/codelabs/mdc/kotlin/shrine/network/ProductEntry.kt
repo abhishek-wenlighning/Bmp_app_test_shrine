@@ -1,12 +1,18 @@
 package com.google.codelabs.mdc.kotlin.shrine.network
 
+
 import android.content.res.Resources
 import android.net.Uri
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.google.codelabs.mdc.kotlin.shrine.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.util.*
+
 
 /**
  * A product entry in the list of products.
@@ -20,11 +26,18 @@ class ProductEntry(
          * Loads a raw JSON at R.raw.products and converts it into a list of ProductEntry objects
          */
         fun initProductEntryList(resources: Resources): List<ProductEntry> {
-            val inputStream = resources.openRawResource(R.raw.products)
-            val jsonProductsString = inputStream.bufferedReader().use(BufferedReader::readText)
+//            val inputStream = resources.openRawResource(R.raw.products)
+//            val jsonProductsString = inputStream.bufferedReader().use(BufferedReader::readText)
+            val jsonProductsString = "[{\"title\": \"Vagabond sack\",\"url\": \"https://storage.googleapis.com/material-vignettes.appspot.com/image/0-0.jpg\",\"price\": \"$120\"}]"
             val gson = Gson()
             val productListType = object : TypeToken<ArrayList<ProductEntry>>() {}.type
             return gson.fromJson<List<ProductEntry>>(jsonProductsString, productListType)
+
+        }
+        fun initProductEntryList(productlist: String): List<ProductEntry> {
+            val gson = Gson()
+            val productListType = object : TypeToken<ArrayList<ProductEntry>>() {}.type
+            return gson.fromJson<List<ProductEntry>>(productlist, productListType)
 
         }
     }

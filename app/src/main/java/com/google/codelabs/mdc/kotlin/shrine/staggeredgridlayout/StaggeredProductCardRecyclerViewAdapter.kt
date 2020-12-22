@@ -41,19 +41,7 @@ class StaggeredProductCardRecyclerViewAdapter(private val productList: List<Prod
     override fun onBindViewHolder(holder: StaggeredProductCardViewHolder, position: Int) {
         if (productList != null && position < productList.size) {
             val product = productList[position]
-            //holder.productTitle.text = "hello"//product.title
-            val url = "http://3.17.70.143:8069/recurring_task/recurring_task"
-
-            val data = mapOf<String, String>("barcode" to "4813882329758")
-
-            val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, url, JSONObject(data), Response.Listener { response ->
-                //val gson = Gson()
-                //val res = gson.fromJson<JsonObjectRequest>(response.get("result").toString(),JsonObjectRequest.class))
-                holder.productTitle.text = response.get("result").toString()
-            }, Response.ErrorListener { error ->
-                holder.productTitle.text = "Error: %s".format(error.toString())
-            })
-            api.addJsonreq(jsonObjectRequest)
+            holder.productTitle.text = product.title
             holder.productPrice.text = product.price
             api.setImageFromUrl(holder.productImage, product.url)
         }

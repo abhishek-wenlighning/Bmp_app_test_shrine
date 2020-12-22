@@ -2,6 +2,7 @@ package com.google.codelabs.mdc.kotlin.shrine
 
 import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.RequiresApi
@@ -11,9 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.codelabs.mdc.kotlin.shrine.network.ProductEntry
+import com.google.codelabs.mdc.kotlin.shrine.network.api.getproductlist
 import com.google.codelabs.mdc.kotlin.shrine.staggeredgridlayout.StaggeredProductCardRecyclerViewAdapter
 import kotlinx.android.synthetic.main.shr_product_grid_fragment.*
 import kotlinx.android.synthetic.main.shr_product_grid_fragment.view.*
+
 
 class ProductGridFragment : Fragment() {
 
@@ -23,18 +26,18 @@ class ProductGridFragment : Fragment() {
         // Inflate the layout for this fragment with the ProductGrid theme
         val view = inflater.inflate(R.layout.shr_product_grid_fragment, container, false)
 
-        // Set up the toolbar.
+        // Set up the toolbar.\\
         (activity as AppCompatActivity).setSupportActionBar(this.app_bar)
         view.run {
 
             // Set up the toolbar.
             (activity as AppCompatActivity).setSupportActionBar(app_bar)
             app_bar.setNavigationOnClickListener(NavigationIconClickListener(
-                activity!!,
+                    activity!!,
                     product_grid,
                     AccelerateDecelerateInterpolator(),
-                ContextCompat.getDrawable(context!!, R.drawable.ic_build_logo), // Menu open icon
-                ContextCompat.getDrawable(context!!, R.drawable.shr_close_menu))) // Menu close icon
+                    ContextCompat.getDrawable(context!!, R.drawable.ic_build_logo), // Menu open icon
+                    ContextCompat.getDrawable(context!!, R.drawable.shr_close_menu))) // Menu close icon
 
             // Set up the RecyclerView
             recycler_view.setHasFixedSize(true)
@@ -48,11 +51,16 @@ class ProductGridFragment : Fragment() {
         view.recycler_view.layoutManager = gridLayoutManager
         val adapter = StaggeredProductCardRecyclerViewAdapter(
                 ProductEntry.initProductEntryList(resources))
-        view.recycler_view.adapter = adapter
+        //view.recycler_view.adapter = adapter
+        getproductlist(view.recycler_view, resources)
         val largePadding = resources.getDimensionPixelSize(R.dimen.shr_staggered_product_grid_spacing_large)
         val smallPadding = resources.getDimensionPixelSize(R.dimen.shr_staggered_product_grid_spacing_small)
         view.recycler_view.addItemDecoration(ProductGridItemDecoration(largePadding, smallPadding))
-
+        val displayMetrics = DisplayMetrics()
+        (activity as AppCompatActivity).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+        view.recycler_view.minimumHeight = (displayMetrics.heightPixels * 0.9).toInt()
         // Set cut corner background for API 23+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             view.product_grid.background = context?.getDrawable(R.drawable.shr_product_grid_background_shape)
@@ -61,7 +69,7 @@ class ProductGridFragment : Fragment() {
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu,menuInflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.shr_toolbar_menu, menu)
         super.onCreateOptionsMenu(menu, menuInflater)
     }
